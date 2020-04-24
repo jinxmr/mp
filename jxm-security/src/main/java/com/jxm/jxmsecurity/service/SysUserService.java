@@ -1,0 +1,32 @@
+package com.jxm.jxmsecurity.service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jxm.jxmsecurity.dao.UserDao;
+import com.jxm.jxmsecurity.domain.SysUser;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class SysUserService extends ServiceImpl<UserDao, SysUser> {
+
+	static final String WORK_NUM = "M";
+
+	@Autowired
+	private UserDao userDao;
+
+	public boolean save(SysUser user) {
+		//获取workNum
+		String maxWorkNum = userDao.findMaxIdData();
+		if (null != maxWorkNum) {
+			String[] numbers = maxWorkNum.split("M");
+			Long number = Long.valueOf(numbers[1]);
+			user.setWorkNumber(WORK_NUM + String.format("%05d", (number + 1)));
+		} else {
+			user.setWorkNumber(WORK_NUM + String.format("%05d", 1));
+		}
+		int ret = userDao.insert(user);
+		return ret > 0 ? true : false;
+	}
+}

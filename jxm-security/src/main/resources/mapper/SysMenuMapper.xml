@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxm.jxmsecurity.dao.MenuDao">
+    <resultMap id="BaseResultMap" type="com.jxm.jxmsecurity.domain.SysMenu">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order_sort" jdbcType="INTEGER" property="orderSort"/>
+        <result column="href" jdbcType="VARCHAR" property="href"/>
+        <result column="menu_type" jdbcType="CHAR" property="menuType"/>
+        <result column="visible" jdbcType="CHAR" property="visible"/>
+        <result column="perms" jdbcType="VARCHAR" property="perms"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="app_id" jdbcType="BIGINT" property="appId"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap_zTree" type="com.jxm.jxmsecurity.domain.SysMenu">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order_sort" jdbcType="INTEGER" property="orderSort"/>
+        <result column="menu_type" jdbcType="CHAR" property="menuType"/>
+        <result column="perms" jdbcType="VARCHAR" property="perms"/>
+        <result column="app_id" jdbcType="BIGINT" property="appId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+    </resultMap>
+
+    <select id="selectPermsByUserId" parameterType="Integer" resultType="String">
+        select distinct m.perms
+        from sys_menu m
+        left join sys_role_menu rm on m.id = rm.menu_id
+        left join sys_user_role ur on rm.role_id = ur.role_id
+        where ur.user_id = #{userId}
+    </select>
+
+    <select id="selectMenusByUserId" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT DISTINCT
+        m.id,
+        m.parent_id,
+        m.menu_name,
+        m.href,
+        m.perms,
+        m.menu_type,
+        m.icon,
+        m.order_sort,
+        m.create_time
+        FROM
+        sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.id = rm.menu_id
+        LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
+        LEFT JOIN sys_role ro ON ur.role_id = ro.id
+        WHERE
+        ur.user_id = #{userId} and m.menu_type in ('M', 'C') and m.visible = 0 AND ro.status = 0
+
+        ORDER BY
+        m.order_sort
+    </select>
+
+    <select id="selectMenuNormalAll" resultMap="BaseResultMap">
+        SELECT DISTINCT
+        m.id,
+        m.parent_id,
+        m.menu_name,
+        m.href,
+        m.perms,
+        m.menu_type,
+        m.icon,
+        m.order_sort,
+        m.create_time
+        FROM
+        sys_menu m
+        WHERE
+        m.menu_type IN ( 'M', 'C' )
+        AND m.visible = 0
+        ORDER BY
+        m.order_sort
+    </select>
+
+    <select id="selectByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap_zTree">
+        SELECT DISTINCT
+        m.id,
+        m.parent_id,
+        m.menu_name,
+        m.href,
+        m.perms,
+        m.menu_type,
+        m.order_sort,
+        rm.role_id
+        FROM
+        sys_menu m
+        LEFT JOIN
+        sys_role_menu rm on m.id=rm.menu_id and rm.role_id = #{roleId}
+        ORDER BY m.order_sort
+    </select>
+</mapper>
