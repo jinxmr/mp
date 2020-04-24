@@ -87,7 +87,7 @@ public class SysMenuService {
 		Page<SysMenu> page = new Page<>(pageNum, pageSize);
 		QueryWrapper queryWrapper = new QueryWrapper();
 		if(StringUtils.isNotBlank(menuName)) {
-			queryWrapper.eq("menuName", menuName);
+			queryWrapper.like("menu_name", menuName);
 		}
 		Page<SysMenu> sysMenuPage = menuDao.selectPage(page, queryWrapper);
 		return sysMenuPage;

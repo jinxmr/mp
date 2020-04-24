@@ -1,5 +1,8 @@
 package com.jxm.jxmsecurity.rest;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jxm.jxmsecurity.domain.SysRoleMenu;
 import com.jxm.model.AjaxResult;
 import com.jxm.jxmsecurity.domain.SysRole;
 import com.jxm.jxmsecurity.domain.SysUser;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,11 +34,13 @@ public class SysRoleRest {
 	@Autowired
 	private SysUserService sysUserService;
 
-	@GetMapping("findAll")
-	@ApiOperation("查询全部角色")
-	public AjaxResult<List<SysRole>> findAll() {
-		List<SysRole> userAll = sysRoleService.list();
-		return new AjaxResult(true, "成功", userAll);
+	@GetMapping("list")
+	@ApiOperation("查询角色列表")
+	public Page<SysRole> list(@RequestParam(required = false) String roleName,
+										  @RequestParam int pageNumber,
+										  @RequestParam int pageSize) {
+		Page<SysRole> rolePage = sysRoleService.selectListPage(roleName, pageNumber, pageSize);
+		return rolePage;
 	}
 
 	@PostMapping("insert")

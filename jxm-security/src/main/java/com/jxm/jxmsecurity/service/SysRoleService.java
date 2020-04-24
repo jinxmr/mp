@@ -1,11 +1,15 @@
 package com.jxm.jxmsecurity.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxm.jxmsecurity.dao.RoleDao;
 import com.jxm.jxmsecurity.dao.RoleMenuDao;
 import com.jxm.jxmsecurity.domain.SysRole;
 import com.jxm.jxmsecurity.domain.SysRoleMenu;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,16 @@ public class SysRoleService extends ServiceImpl<RoleDao, SysRole> {
 
 	@Autowired
 	private RoleMenuDao roleMenuDao;
+
+	public Page<SysRole> selectListPage (String roleName, int pageNumber, int pageSize) {
+		Page<SysRole> page = new Page<>(pageNumber, pageSize);
+		QueryWrapper queryWrapper = new QueryWrapper();
+		if(StringUtils.isNoneBlank(roleName)) {
+			queryWrapper.like("role_name", roleName);
+		}
+		page = roleDao.selectPage(page, queryWrapper);
+		return page;
+	}
 
 	@Override
 	public boolean save(SysRole entity) {
@@ -43,6 +57,6 @@ public class SysRoleService extends ServiceImpl<RoleDao, SysRole> {
 				roleMenuDao.insert(rm);
 			}
 		}
-		return true;
+		return retRole > 0 ? true : false;
 	}
 }
