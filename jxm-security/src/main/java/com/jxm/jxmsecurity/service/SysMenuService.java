@@ -83,7 +83,7 @@ public class SysMenuService {
 	 *
 	 * @param menuName 菜单信息
 	 */
-	public Page<SysMenu> selectMenuList(String menuName, Integer pageNum, Integer pageSize) {
+	public Page<SysMenu> selectMenuList(String menuName, int pageNum, int pageSize) {
 		Page<SysMenu> page = new Page<>(pageNum, pageSize);
 		QueryWrapper queryWrapper = new QueryWrapper();
 		if(StringUtils.isNotBlank(menuName)) {

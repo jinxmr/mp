@@ -1,5 +1,6 @@
 package com.jxm.jxmsecurity.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jxm.model.AjaxResult;
 import com.jxm.jxmsecurity.domain.SysUser;
 import com.jxm.jxmsecurity.service.SysUserService;
@@ -9,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -25,11 +29,23 @@ public class SysUserRest {
 	@Autowired
 	private SysUserService sysUserService;
 
-	@GetMapping("findAll")
-	@ApiOperation("查询全部用户")
-	public AjaxResult<List<SysUser>> findAll() {
-		List<SysUser> userAll = sysUserService.list();
-		return new AjaxResult(true, "成功", userAll);
+	@GetMapping("list")
+	@ApiOperation("用户列表")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "loginName", value = "登录账号", dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name = "workNumber", value = "工号", dataType = "String", paramType ="query"),
+			@ApiImplicitParam(name = "mobile", value = "手机号", dataType = "String", paramType ="query"),
+			@ApiImplicitParam(name = "status", value = "用户状态0启用 1停用", dataType = "int", paramType ="query")})
+	public Page<SysUser> list(@RequestParam int pageNumber,
+							  @RequestParam int pageSize,
+							  @RequestParam(required = false) String loginName,
+							  @RequestParam(required = false) String workNumber,
+							  @RequestParam(required = false) String mobile,
+							  @RequestParam(required = false) Integer status) {
+		Page<SysUser> page = sysUserService.selectPage(loginName, workNumber, mobile, status, pageNumber, pageSize);
+		return page;
 	}
 
 	@PostMapping("insertUser")

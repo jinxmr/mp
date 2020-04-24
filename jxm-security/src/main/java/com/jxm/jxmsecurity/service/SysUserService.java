@@ -1,9 +1,12 @@
 package com.jxm.jxmsecurity.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxm.jxmsecurity.dao.UserDao;
 import com.jxm.jxmsecurity.domain.SysUser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,28 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 
 	@Autowired
 	private UserDao userDao;
+
+	public Page<SysUser> selectPage(String loginName, String workNumber, String mobile, Integer status, int pageNumber,
+									int pageSize) {
+		Page<SysUser> page = new Page<>(pageNumber, pageSize);
+		QueryWrapper<SysUser> queryWrapper = new QueryWrapper();
+		if (StringUtils.isNotBlank(loginName)) {
+			queryWrapper.like("login_name", loginName);
+		}
+		if (StringUtils.isNotBlank(workNumber)) {
+			queryWrapper.like("work_number", workNumber);
+		}
+		if (StringUtils.isNotBlank(mobile)) {
+			queryWrapper.like("mobile", mobile);
+		}
+		if (null != status) {
+			queryWrapper.like("status", status);
+		}
+
+		page = userDao.selectPage(page, queryWrapper);
+		return page;
+
+	}
 
 	public boolean save(SysUser user) {
 		//获取workNum

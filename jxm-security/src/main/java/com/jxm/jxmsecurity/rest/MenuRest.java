@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 
 /**
  * 菜单 信息操作处理
@@ -43,10 +45,14 @@ public class MenuRest {
 	 */
 	@PostMapping("/list")
 	@ResponseBody
-	public Page<SysMenu> list(@RequestParam(required = false) String menuName, @RequestParam Integer pageNum,
-							  @RequestParam Integer pageSize) {
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "menuName", value = "菜单名称", dataType = "String",paramType = "query")})
+	public Page<SysMenu> list(@RequestParam(required = false) String menuName, @RequestParam int pageNumber,
+							  @RequestParam int pageSize) {
 
-		Page<SysMenu> page = menuService.selectMenuList(menuName, pageNum, pageSize);
+		Page<SysMenu> page = menuService.selectMenuList(menuName, pageNumber, pageSize);
 		return page;
 	}
 

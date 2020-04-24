@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -36,6 +38,10 @@ public class SysRoleRest {
 
 	@GetMapping("list")
 	@ApiOperation("查询角色列表")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"),
+			@ApiImplicitParam(name = "roleName", value = "角色名称", dataType = "String",paramType = "query")})
 	public Page<SysRole> list(@RequestParam(required = false) String roleName,
 										  @RequestParam int pageNumber,
 										  @RequestParam int pageSize) {
