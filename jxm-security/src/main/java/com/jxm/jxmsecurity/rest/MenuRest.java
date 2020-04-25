@@ -35,11 +35,6 @@ public class MenuRest {
 	@Autowired
 	private SysMenuService menuService;
 
-	@GetMapping()
-	public String menu() {
-		return prefix + "/menu";
-	}
-
 	/**
 	 * 查询菜单列表
 	 */

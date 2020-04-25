@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jxm.jxmsecurity.dao.UserDao;
 import com.jxm.jxmsecurity.domain.SysUser;
+import com.jxm.model.AjaxResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,7 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 	@Autowired
 	private UserDao userDao;
 
-	public Page<SysUser> selectPage(String loginName, String workNumber, String mobile, Integer status, int pageNumber,
-									int pageSize) {
+	public Page<SysUser> selectPage(String loginName, String workNumber, String mobile, Integer status, int pageNumber, int pageSize) {
 		Page<SysUser> page = new Page<>(pageNumber, pageSize);
 		QueryWrapper<SysUser> queryWrapper = new QueryWrapper();
 		if (StringUtils.isNotBlank(loginName)) {
@@ -53,5 +53,24 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 		}
 		int ret = userDao.insert(user);
 		return ret > 0 ? true : false;
+	}
+
+	/**
+	 * 登录
+	 * @param loginName
+	 * @param password
+	 * @return
+	 */
+	public AjaxResult login(String loginName, String password) {
+		SysUser user = userDao.selectByLoginNameAndPassword(loginName, password);
+		if(null != user) {
+			if(user.getStatus() == 0) {
+				return new AjaxResult(true, "成功");
+			} else {
+				return new AjaxResult(false, "该账号已停用");
+			}
+		} else {
+			return new AjaxResult(false, "账号不存在");
+		}
 	}
 }

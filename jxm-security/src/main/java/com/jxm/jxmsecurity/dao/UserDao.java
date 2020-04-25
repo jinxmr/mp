@@ -11,4 +11,10 @@ public interface UserDao extends BaseMapper<SysUser> {
 
 	@Select(value = "select max(work_number) from sys_user")
 	String findMaxIdData();
+
+	@Select(value = "select id,create_time,del_flag,email,login_time,login_ip," +
+			"login_name,mobile,photo,remarks,sex,status,update_time,user_name," +
+			"work_number,wx_open_id from sys_user where loginName=#{loginName}" +
+			"and password=#{password}")
+	SysUser selectByLoginNameAndPassword(String loginName, String password);
 }

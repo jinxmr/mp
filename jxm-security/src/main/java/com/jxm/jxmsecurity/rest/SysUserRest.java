@@ -31,19 +31,8 @@ public class SysUserRest {
 
 	@GetMapping("list")
 	@ApiOperation("用户列表")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"),
-			@ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"),
-			@ApiImplicitParam(name = "loginName", value = "登录账号", dataType = "String",paramType = "query"),
-			@ApiImplicitParam(name = "workNumber", value = "工号", dataType = "String", paramType ="query"),
-			@ApiImplicitParam(name = "mobile", value = "手机号", dataType = "String", paramType ="query"),
-			@ApiImplicitParam(name = "status", value = "用户状态0启用 1停用", dataType = "int", paramType ="query")})
-	public Page<SysUser> list(@RequestParam int pageNumber,
-							  @RequestParam int pageSize,
-							  @RequestParam(required = false) String loginName,
-							  @RequestParam(required = false) String workNumber,
-							  @RequestParam(required = false) String mobile,
-							  @RequestParam(required = false) Integer status) {
+	@ApiImplicitParams({@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"), @ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"), @ApiImplicitParam(name = "loginName", value = "登录账号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "workNumber", value = "工号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "mobile", value = "手机号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "status", value = "用户状态0启用 1停用", dataType = "int", paramType = "query")})
+	public Page<SysUser> list(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam(required = false) String loginName, @RequestParam(required = false) String workNumber, @RequestParam(required = false) String mobile, @RequestParam(required = false) Integer status) {
 		Page<SysUser> page = sysUserService.selectPage(loginName, workNumber, mobile, status, pageNumber, pageSize);
 		return page;
 	}
@@ -52,14 +41,14 @@ public class SysUserRest {
 	@ApiOperation("添加用户")
 	public AjaxResult insertUser(@RequestBody @ApiParam SysUser user) {
 		boolean ret = sysUserService.save(user);
-		return new AjaxResult(ret, ret ? "成功": "失败");
+		return new AjaxResult(ret, ret ? "成功" : "失败");
 	}
 
 	@PostMapping("updateUser")
 	@ApiOperation("修改用户")
 	public AjaxResult updateUser(@RequestBody @ApiParam SysUser user) {
 		boolean ret = sysUserService.updateById(user);
-		return new AjaxResult(ret, ret ? "成功": "失败");
+		return new AjaxResult(ret, ret ? "成功" : "失败");
 	}
 
 	@PostMapping("findById")
@@ -73,6 +62,14 @@ public class SysUserRest {
 	@ApiOperation("根据ID删除用户")
 	public AjaxResult<SysUser> deleteById(Long id) {
 		boolean ret = sysUserService.removeById(id);
-		return new AjaxResult(true, ret ? "成功": "失败");
+		return new AjaxResult(true, ret ? "成功" : "失败");
 	}
+
+	@PostMapping("login")
+	@ApiOperation("用户登录")
+	public AjaxResult login(@RequestParam String loginName, @RequestParam String password) {
+		AjaxResult ret = sysUserService.login(loginName, password);
+		return ret;
+	}
+
 }

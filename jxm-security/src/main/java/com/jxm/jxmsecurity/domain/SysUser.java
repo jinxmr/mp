@@ -64,7 +64,7 @@ public class SysUser implements Serializable {
 	@ApiModelProperty(value = "微信openId", hidden = true)
 	private String wxOpenId;
 
-	@ApiModelProperty(value = "用户状态")
+	@ApiModelProperty(value = "用户状态 0正常 1停用")
 	private Integer status;
 
 	@ApiModelProperty(value = "用户性别 0男1女空未知")

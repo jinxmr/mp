@@ -21,7 +21,7 @@ public class SysMenu implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "ID 自增")
+	@ApiModelProperty(value = "ID 自增", hidden = true)
 	private Long id;
 
 	@ApiModelProperty(value = "菜单名称")
@@ -48,10 +48,10 @@ public class SysMenu implements Serializable {
 	@ApiModelProperty(value = "菜单图标")
 	private String icon;
 
-	@ApiModelProperty(value = "创建人")
+	@ApiModelProperty(value = "创建人", hidden = true)
 	private String createBy;
 
-	@ApiModelProperty(value = "创建时间")
+	@ApiModelProperty(value = "创建时间", hidden = true)
 	private Date createTime;
 
 	@ApiModelProperty(value = "备注")
