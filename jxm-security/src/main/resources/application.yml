@@ -7,6 +7,17 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: root
+  session:
+    store-type: redis
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        min-idle: 10000
+    timeout: 30000
+
 mybatis-plus:
   # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
   # 如果是放在resource目录 classpath:/mapper/*Mapper.xml

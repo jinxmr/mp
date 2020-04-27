@@ -9,6 +9,7 @@
     <modules>
         <module>jxm-base</module>
         <module>jxm-security</module>
+        <module>jxm-common</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -26,12 +27,14 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
+        <!-- mybatis-plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.3.0</version>
         </dependency>
 
+        <!-- springSecurity -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -62,10 +65,18 @@
             <version>3.8.1</version>
         </dependency>
 
+        <!-- MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.18</version>
+        </dependency>
+
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
         <!-- lombok -->

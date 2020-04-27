@@ -3,9 +3,11 @@ package com.jxm.jxmsecurity.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jxm.dto.LoginParam;
 import com.jxm.jxmsecurity.dao.UserDao;
 import com.jxm.jxmsecurity.domain.SysUser;
 import com.jxm.model.AjaxResult;
+import com.jxm.utils.TokenUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,16 +63,20 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 	 * @param password
 	 * @return
 	 */
-	public AjaxResult login(String loginName, String password) {
+	public AjaxResult login(String loginName, String password) throws Exception {
 		SysUser user = userDao.selectByLoginNameAndPassword(loginName, password);
 		if(null != user) {
-			if(user.getStatus() == 0) {
-				return new AjaxResult(true, "成功");
-			} else {
+			if(user.getStatus() != 0) {
 				return new AjaxResult(false, "该账号已停用");
 			}
 		} else {
 			return new AjaxResult(false, "账号不存在");
 		}
+		//生成token
+		LoginParam loginParam = new LoginParam(loginName, user.getUserName(), user.getWorkNumber());
+
+		String token = TokenUtil.createJWT(loginParam);
+
+		return new AjaxResult(false, "成功", token);
 	}
 }

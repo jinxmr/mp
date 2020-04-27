@@ -67,7 +67,7 @@ public class SysUserRest {
 
 	@PostMapping("login")
 	@ApiOperation("用户登录")
-	public AjaxResult login(@RequestParam String loginName, @RequestParam String password) {
+	public AjaxResult login(@RequestParam String loginName, @RequestParam String password) throws Exception {
 		AjaxResult ret = sysUserService.login(loginName, password);
 		return ret;
 	}
