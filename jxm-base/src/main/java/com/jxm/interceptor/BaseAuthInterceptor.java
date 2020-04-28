@@ -11,8 +11,10 @@ public class BaseAuthInterceptor implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(authenticationInterceptor())
+				.excludePathPatterns("/login/**", "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**")
 				.addPathPatterns("/**");
 	}
+
 	@Bean
 	public AuthenticationInterceptor authenticationInterceptor() {
 		return new AuthenticationInterceptor();

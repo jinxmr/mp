@@ -35,11 +35,11 @@
         </dependency>
 
         <!-- springSecurity -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
             <version>${spring.boot.version}</version>
-        </dependency>
+        </dependency>-->
 
         <!-- JWT相关 -->
         <dependency>
@@ -63,6 +63,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.56</version>
         </dependency>
 
         <!-- MySQL -->
