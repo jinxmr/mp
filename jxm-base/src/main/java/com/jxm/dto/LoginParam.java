@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 public class LoginParam {
 
 	@ApiModelProperty(value = "用户ID")
-	private String userId;
+	private Long userId;
 
 	@ApiModelProperty(value = "登录账号")
 	private String loginName;
@@ -22,7 +22,8 @@ public class LoginParam {
 	@ApiModelProperty(value = "工号")
 	private String workNumber;
 
-	public LoginParam(String loginName, String userName, String workNumber) {
+	public LoginParam(Long userId, String loginName, String userName, String workNumber) {
+		this.userId = userId;
 		this.loginName = loginName;
 		this.userName = userName;
 		this.workNumber = workNumber;

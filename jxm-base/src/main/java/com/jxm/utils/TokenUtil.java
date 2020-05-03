@@ -32,6 +32,11 @@ public class TokenUtil {
 
 	static byte[] KEY_BYTE = DatatypeConverter.parseBase64Binary(KEY);
 
+	public static void main(String[] args) throws Exception {
+		String jwt = createJWT(new LoginParam(1L, "jinxm", "jxm", "M00001"));
+		System.out.println(jwt);
+	}
+
 	/**
 	 * 创建jwt
 	 */
@@ -46,7 +51,7 @@ public class TokenUtil {
 		String loginName = loginParam.getLoginName();
 		String userName = loginParam.getUserName();
 		String workNumber = loginParam.getWorkNumber();
-		String userId = loginParam.getUserId();
+		Long userId = loginParam.getUserId();
 
 		Map<String, Object> claims = new HashMap<String, Object>();//创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
 		claims.put("loginName", loginName);
@@ -74,7 +79,6 @@ public class TokenUtil {
 	 * 解密jwt
 	 */
 	public static Claims parseJWT(String jwt) throws Exception {
-		SecretKey key = generalKey();  //签名秘钥，和生成的签名的秘钥一模一样
 		Claims claims = Jwts.parser()  //得到DefaultJwtParser
 				.setSigningKey(KEY_BYTE)         //设置签名的秘钥
 				.parseClaimsJws(jwt)
@@ -88,17 +92,6 @@ public class TokenUtil {
 	public static boolean isExpired(Date expiration) {
 		return expiration.after(new Date());
 
-	}
-
-	/**
-	 * 由字符串生成加密key
-	 */
-	public static SecretKey generalKey() {
-		byte[] encodedKey = Base64.decodeBase64(KEY);//本地的密码解码[B@152f6e2
-		System.out.println(encodedKey);//[B@152f6e2
-		System.out.println(Base64.encodeBase64URLSafeString(encodedKey));//7786df7fc3a34e26a61c034d5ec8245d
-		SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");// 根据给定的字节数组使用AES加密算法构造一个密钥，使用 encodedKey中的始于且包含 0 到前 leng 个字节这是当然是所有。（后面的文章中马上回推出讲解Java加密和解密的一些算法）
-		return key;
 	}
 
 	public static String getHeader() {

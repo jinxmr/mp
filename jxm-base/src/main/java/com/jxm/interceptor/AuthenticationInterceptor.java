@@ -72,7 +72,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			Date expiration = claims.getExpiration();
 			if (TokenUtil.isExpired(expiration)) {
 
-				Long userId = (Long) claims.get("userId");
+				Object userId = claims.get("userId");
 				request.setAttribute(SECURITY_USER, userId);
 				Cookie jwtCookie = new Cookie(TokenUtil.getHeader(), URLEncoder.encode(token, "UTF-8"));
 				jwtCookie.setHttpOnly(true);

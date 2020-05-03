@@ -73,7 +73,7 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 			return new AjaxResult(false, "账号不存在");
 		}
 		//生成token
-		LoginParam loginParam = new LoginParam(loginName, user.getUserName(), user.getWorkNumber());
+		LoginParam loginParam = new LoginParam(user.getId(), loginName, user.getUserName(), user.getWorkNumber());
 
 		String token = TokenUtil.createJWT(loginParam);
 
