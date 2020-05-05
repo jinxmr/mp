@@ -1,3 +1,4 @@
+/*
 package com.jxm.interceptor;
 
 import com.alibaba.fastjson.JSONArray;
@@ -28,10 +29,12 @@ import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 
 
+*/
 /**
  * @author jinxm
  * @date 2018-07-08 20:41
- */
+ *//*
+
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -56,6 +59,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		if (StringUtils.isEmpty(token)) {
+			//清空cookie
+			CookieUtils.delCookie(response,TokenUtil.getHeader());
+			setErr(response, "299", "认证失败");
 			return false;
 		}
 
@@ -82,6 +88,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 				response.addHeader(TokenUtil.getHeader(), token);
 				return true;
 			} else {
+				//清空cookie
+				CookieUtils.delCookie(response,TokenUtil.getHeader());
+				setErr(response, "299", "认证失败");
 				return false;
 			}
 		} else {
@@ -90,6 +99,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			request.setAttribute("exceptionMessage", TokenUtil.getHeader() + " 无效，请重新登录！");
 			request.getRequestDispatcher("/exception/authentication")
 					.forward(request, response);
+			//清空cookie
+			CookieUtils.delCookie(response,TokenUtil.getHeader());
+			setErr(response, "299", "认证失败");
 			return false;
 		}
 	}
@@ -105,13 +117,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	}
 
 	private void setErr(HttpServletResponse response, String code, String msg) throws IOException {
-		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put("code", msg);
-		jsonArray.add(jsonObject1);
-		JSONObject jsonObject2 = new JSONObject();
-		jsonObject2.put("code", msg);
-		jsonArray.add(jsonObject2);
-		response.getWriter().write(jsonArray.toJSONString());
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("code", code);
+		jsonObject.put("msg", msg);
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonObject.toJSONString());
 	}
 }
+*/

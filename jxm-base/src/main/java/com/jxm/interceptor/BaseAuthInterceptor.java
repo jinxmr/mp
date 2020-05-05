@@ -1,3 +1,4 @@
+/*
 package com.jxm.interceptor;
 
 import org.springframework.context.annotation.Bean;
@@ -20,3 +21,4 @@ public class BaseAuthInterceptor implements WebMvcConfigurer {
 		return new AuthenticationInterceptor();
 	}
 }
+*/
