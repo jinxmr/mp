@@ -1,5 +1,6 @@
 package com.jxm.jxmsecurity.filter;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jxm.jxmsecurity.vo.LoginParamVO;
 import com.jxm.jxmsecurity.utils.TokenUtil;
@@ -31,64 +32,84 @@ import java.util.Collection;
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-		super.setFilterProcessesUrl("/malls/user/login");
-	}
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+        super.setFilterProcessesUrl("/malls/user/login");
+    }
 
-	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request,
-												HttpServletResponse response) throws AuthenticationException {
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response) throws AuthenticationException {
 
-		// 从输入流中获取到登录的信息
-		try {
-			LoginParamVO loginParam = new ObjectMapper().readValue(request.getInputStream(), LoginParamVO.class);
-			return authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginParam.getLoginName(), loginParam.getPassword())
-			);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+        // 从输入流中获取到登录的信息
+        try {
+            LoginParamVO loginParam = new ObjectMapper().readValue(request.getInputStream(), LoginParamVO.class);
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginParam.getLoginName(), loginParam.getPassword())
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	// 成功验证后调用的方法
-	// 如果验证成功，就生成token并返回
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request,
-											HttpServletResponse response,
-											FilterChain chain,
-											Authentication authResult) throws IOException, ServletException {
+    /**
+     * 验证成功调用的方法
+     *
+     * @param request
+     * @param response
+     * @param chain
+     * @param authResult
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
 
-		LoginParamVO jwtUser = (LoginParamVO) authResult.getPrincipal();
-		log.info("jwtUser:" + jwtUser.toString());
+        LoginParamVO jwtUser = (LoginParamVO) authResult.getPrincipal();
+        log.info("jwtUser:" + jwtUser.toString());
 
-		String role = "";
-		Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
-		for (GrantedAuthority authority : authorities){
-			role = authority.getAuthority();
-		}
+        String role = "";
+        Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            role = authority.getAuthority();
+        }
 
-		String token = null;
-		try {
-			token = TokenUtil.createJWT(jwtUser);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		//String token = JwtTokenUtils.createToken(jwtUser.getUsername(), false);
-		// 返回创建成功的token
-		// 但是这里创建的token只是单纯的token
-		// 按照jwt的规定，最后请求的时候应该是 `Bearer token`
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
-		response.setHeader("token",token);
-	}
+        String token = null;
+        try {
+            token = TokenUtil.createJWT(jwtUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 返回创建成功的token
+        // 但是这里创建的token只是单纯的token
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        response.setHeader(TokenUtil.getHeader(), token);
+    }
 
-	@Override
-	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-		log.error(failed.toString());
-		response.getWriter().write("authentication failed, reason: " + failed.getMessage());
-	}
+    /**
+     * 认证失败调用的方法
+     *
+     * @param request
+     * @param response
+     * @param failed
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        log.error(failed.toString());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", 299);
+        jsonObject.put("msg", "认证失败");
+        response.getWriter().write(jsonObject.toJSONString());
+    }
 }

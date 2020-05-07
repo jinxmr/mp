@@ -39,17 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                // 测试用资源，需要验证了的用户才能访问
-                .antMatchers("/malls/**")
+                .antMatchers("/malls/user/registered")
+                .permitAll()
+                .anyRequest()
                 .authenticated()
-                .antMatchers(HttpMethod.DELETE, "/malls/**")
-                .hasRole("ADMIN")
-                // 其他都放行了
-                .anyRequest().permitAll()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                // 不需要session
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

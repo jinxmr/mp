@@ -30,7 +30,7 @@ public class LoginParamVO implements UserDetails {
 	private String workNumber;
 
 	@ApiModelProperty(value = "用户状态 0正常 1停用")
-	private Integer status;
+	private Boolean status;
 
 	@ApiModelProperty(value = "工号")
 	private Collection<? extends GrantedAuthority> authorities;
@@ -42,7 +42,7 @@ public class LoginParamVO implements UserDetails {
 		this.workNumber = workNumber;
 	}
 
-	public LoginParamVO(String loginName, String password, Integer status, Collection<? extends GrantedAuthority> authorities) {
+	public LoginParamVO(String loginName, String password, Boolean status, Collection<? extends GrantedAuthority> authorities) {
 		this.loginName = loginName;
 		this.password = password;
 		this.status = status;
@@ -64,7 +64,7 @@ public class LoginParamVO implements UserDetails {
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return this.status == 0 ? true : false;
+		return this.status;
 	}
 
 	@Override

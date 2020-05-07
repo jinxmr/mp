@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping("malls/user/")
+@RequestMapping("/malls/user/")
 @Api(tags = "用户相关接口")
 public class SysUserRest {
 
@@ -40,6 +40,13 @@ public class SysUserRest {
 	@PostMapping("insertUser")
 	@ApiOperation("添加用户")
 	public AjaxResult insertUser(@RequestBody @ApiParam SysUser user) {
+		boolean ret = sysUserService.save(user);
+		return new AjaxResult(ret, ret ? "成功" : "失败");
+	}
+
+	@PostMapping("registered")
+	@ApiOperation("用户自主注册")
+	public AjaxResult registered(@RequestBody @ApiParam SysUser user) {
 		boolean ret = sysUserService.save(user);
 		return new AjaxResult(ret, ret ? "成功" : "失败");
 	}
