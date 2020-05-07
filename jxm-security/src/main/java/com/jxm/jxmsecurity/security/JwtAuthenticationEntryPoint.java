@@ -1,4 +1,4 @@
-package com.jxm.security;
+package com.jxm.jxmsecurity.security;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.security.core.AuthenticationException;

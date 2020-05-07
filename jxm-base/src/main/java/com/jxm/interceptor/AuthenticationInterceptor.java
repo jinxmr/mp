@@ -4,7 +4,7 @@ package com.jxm.interceptor;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jxm.utils.CookieUtils;
-import com.jxm.utils.TokenUtil;
+import com.jxm.jxmsecurity.utils.TokenUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

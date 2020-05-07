@@ -1,7 +1,8 @@
-package com.jxm.security;
+package com.jxm.jxmsecurity.security;
 
-import com.jxm.filter.JWTAuthenticationFilter;
-import com.jxm.filter.JWTAuthorizationFilter;
+import com.jxm.jxmsecurity.filter.JWTAuthenticationFilter;
+import com.jxm.jxmsecurity.filter.JWTAuthorizationFilter;
+import com.jxm.jxmsecurity.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -22,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private SysUserService userService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -31,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
     }
 
     @Override

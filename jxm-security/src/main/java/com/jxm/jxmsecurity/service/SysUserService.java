@@ -3,24 +3,33 @@ package com.jxm.jxmsecurity.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jxm.dto.LoginParam;
 import com.jxm.jxmsecurity.dao.UserDao;
 import com.jxm.jxmsecurity.domain.SysUser;
+import com.jxm.jxmsecurity.security.WebSecurityConfig;
+import com.jxm.jxmsecurity.vo.LoginParamVO;
 import com.jxm.model.AjaxResult;
-import com.jxm.utils.TokenUtil;
+import com.jxm.jxmsecurity.utils.TokenUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class SysUserService extends ServiceImpl<UserDao, SysUser> {
+public class SysUserService extends ServiceImpl<UserDao, SysUser> implements UserDetailsService {
 
 	static final String WORK_NUM = "M";
 
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+	private WebSecurityConfig webSecurityConfig;
 
 	public Page<SysUser> selectPage(String loginName, String workNumber, String mobile, Integer status, int pageNumber, int pageSize) {
 		Page<SysUser> page = new Page<>(pageNumber, pageSize);
@@ -58,25 +67,15 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> {
 	}
 
 	/**
-	 * 登录
-	 * @param loginName
-	 * @param password
+	 * 自定义用户认证
+	 * @param userName
 	 * @return
+	 * @throws UsernameNotFoundException
 	 */
-	public AjaxResult login(String loginName, String password) throws Exception {
-		SysUser user = userDao.selectByLoginNameAndPassword(loginName, password);
-		if(null != user) {
-			if(user.getStatus() != 0) {
-				return new AjaxResult(false, "该账号已停用");
-			}
-		} else {
-			return new AjaxResult(false, "账号不存在");
-		}
-		//生成token
-		LoginParam loginParam = new LoginParam(user.getId(), loginName, user.getUserName(), user.getWorkNumber());
-
-		String token = TokenUtil.createJWT(loginParam);
-
-		return new AjaxResult(false, "成功", token);
+	@Override
+	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		String password = "000000";
+		password = webSecurityConfig.bCryptPasswordEncoder().encode(password);
+		return new LoginParamVO(userName, password, 0, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
 	}
 }

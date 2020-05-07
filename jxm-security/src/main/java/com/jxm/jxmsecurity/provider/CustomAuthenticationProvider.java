@@ -1,4 +1,4 @@
-package com.jxm.provider;
+package com.jxm.jxmsecurity.provider;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

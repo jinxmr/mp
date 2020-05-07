@@ -1,8 +1,8 @@
-package com.jxm.filter;
+package com.jxm.jxmsecurity.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jxm.dto.LoginParam;
-import com.jxm.utils.TokenUtil;
+import com.jxm.jxmsecurity.vo.LoginParamVO;
+import com.jxm.jxmsecurity.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +13,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 
 
@@ -32,7 +35,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
-		super.setFilterProcessesUrl("/auth/login");
+		super.setFilterProcessesUrl("/malls/user/login");
 	}
 
 	@Override
@@ -41,7 +44,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		// 从输入流中获取到登录的信息
 		try {
-			LoginParam loginParam = new ObjectMapper().readValue(request.getInputStream(), LoginParam.class);
+			LoginParamVO loginParam = new ObjectMapper().readValue(request.getInputStream(), LoginParamVO.class);
 			return authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(loginParam.getLoginName(), loginParam.getPassword())
 			);
@@ -59,8 +62,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 											FilterChain chain,
 											Authentication authResult) throws IOException, ServletException {
 
-		LoginParam jwtUser = (LoginParam) authResult.getPrincipal();
-		System.out.println("jwtUser:" + jwtUser.toString());
+		LoginParamVO jwtUser = (LoginParamVO) authResult.getPrincipal();
+		log.info("jwtUser:" + jwtUser.toString());
 
 		String role = "";
 		Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
@@ -85,6 +88,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+		log.error(failed.toString());
 		response.getWriter().write("authentication failed, reason: " + failed.getMessage());
 	}
 }

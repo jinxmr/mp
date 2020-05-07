@@ -1,6 +1,4 @@
-package com.jxm.utils;
-
-import com.jxm.dto.LoginParam;
+package com.jxm.jxmsecurity.utils;
 
 import java.security.Key;
 import java.util.*;
@@ -8,6 +6,7 @@ import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import com.jxm.jxmsecurity.vo.LoginParamVO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +24,7 @@ public class TokenUtil {
 
 
     public static void main(String[] args) throws Exception {
-        String jwt = createJWT(new LoginParam(1L, "jinxmxx", "jxm", "M00001"));
+        String jwt = createJWT(new LoginParamVO(1L, "jinxmxx", "jxm", "M00001"));
         System.out.println(jwt);
 	}
 
@@ -46,7 +45,7 @@ public class TokenUtil {
     /**
      * 创建jwt
      */
-    public static String createJWT(LoginParam loginParam) throws Exception {
+    public static String createJWT(LoginParamVO loginParam) throws Exception {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         Key signingKey = new SecretKeySpec(KEY_BYTE, signatureAlgorithm.getJcaName());

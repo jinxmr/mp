@@ -1,6 +1,6 @@
-package com.jxm.filter;
+package com.jxm.jxmsecurity.filter;
 
-import com.jxm.utils.TokenUtil;
+import com.jxm.jxmsecurity.utils.TokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

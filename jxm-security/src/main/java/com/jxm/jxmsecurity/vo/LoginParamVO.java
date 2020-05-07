@@ -1,4 +1,4 @@
-package com.jxm.dto;
+package com.jxm.jxmsecurity.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +12,7 @@ import java.util.Collection;
 @Data
 @Accessors(chain = true)
 @ApiModel("登录信息")
-public class LoginParam implements UserDetails {
+public class LoginParamVO implements UserDetails {
 
 	@ApiModelProperty(value = "用户ID")
 	private Long userId;
@@ -29,17 +29,27 @@ public class LoginParam implements UserDetails {
 	@ApiModelProperty(value = "工号")
 	private String workNumber;
 
+	@ApiModelProperty(value = "用户状态 0正常 1停用")
+	private Integer status;
+
 	@ApiModelProperty(value = "工号")
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public LoginParam(Long userId, String loginName, String userName, String workNumber) {
+	public LoginParamVO(Long userId, String loginName, String userName, String workNumber) {
 		this.userId = userId;
 		this.loginName = loginName;
 		this.userName = userName;
 		this.workNumber = workNumber;
 	}
 
-	public LoginParam() {
+	public LoginParamVO(String loginName, String password, Integer status, Collection<? extends GrantedAuthority> authorities) {
+		this.loginName = loginName;
+		this.password = password;
+		this.status = status;
+		this.authorities = authorities;
+	}
+
+	public LoginParamVO() {
 	}
 
 	@Override
@@ -54,7 +64,7 @@ public class LoginParam implements UserDetails {
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return this.status == 0 ? true : false;
 	}
 
 	@Override
