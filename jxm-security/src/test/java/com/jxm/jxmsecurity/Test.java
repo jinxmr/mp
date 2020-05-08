@@ -1,6 +1,11 @@
 package com.jxm.jxmsecurity;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import lombok.Data;
@@ -8,50 +13,35 @@ import lombok.experimental.Accessors;
 
 public class Test {
 
-	public static void main(String[] args) {
-		Set<User> userSet = new HashSet<>();
-		User user = new User();
-		user.setId(1L)
-				.setName("张三")
-				.setAge(12)
-				.setAddr("北京市昌平区")
-				.setStatus(true);
-		userSet.add(user);
-
-		User user1 = new User();
-		user1.setId(1L)
-				.setName("张三")
-				.setAge(12)
-				.setAddr("北京市昌平区")
-				.setStatus(true);
-
-		User user2 = new User();
-		user2.setId(1L)
-				.setName("张三")
-				.setAge(12)
-				.setAddr("北京市昌平区")
-				.setStatus(false);
-		userSet.add(user2);
-		System.out.println(userSet.size());
-		userSet.forEach(u -> System.out.println(u.toString()));
+	public static void main(String[] args) throws Exception {
+		String billMonthStr = "2020-06";
+		String currentMonthStr = "2020-05";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+		Date billMonth = sdf.parse(billMonthStr);
+		Date currentMonth = sdf.parse(currentMonthStr);
+		boolean flag = billMonth.after(currentMonth);
+		System.out.println(flag);
 	}
 }
-
 @Data
 @Accessors(chain = true)
 class User {
 	private String name;
 
-	private Long id;
+	private String addr;
 
 	private Integer age;
 
-	private String addr;
-
-	private Boolean status;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(name, user.name) && Objects.equals(addr, user.addr) && Objects.equals(age, user.age);
+	}
 
 	@Override
-	public String toString() {
-		return "User{" + "name='" + name + '\'' + ", id=" + id + ", age=" + age + ", addr='" + addr + '\'' + ", status=" + status + '}';
+	public int hashCode() {
+		return Objects.hash(name, addr, age);
 	}
 }

@@ -14,11 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+
 /**
- * 验证用户名密码正确后，生成一个token，并将token返回给客户端
- * 该类继承自UsernamePasswordAuthenticationFilter，重写了其中的2个方法
- * attemptAuthentication ：接收并解析用户凭证。
- * successfulAuthentication ：用户成功登录后，这个方法会被调用，我们在这个方法里生成token。
+ * token的校验
+ * 该类继承自BasicAuthenticationFilter，在doFilterInternal方法中，
+ * 从http头的Authorization 项读取token数据，然后用Jwts包提供的方法校验token的合法性。
+ * 如果校验通过，就认为这是一个取得授权的合法请求
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

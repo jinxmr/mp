@@ -5,11 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jxm.jxmsecurity.vo.LoginParamVO;
 import com.jxm.jxmsecurity.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -22,12 +30,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 
-
 /**
- * token的校验
- * 该类继承自BasicAuthenticationFilter，在doFilterInternal方法中，
- * 从http头的Authorization 项读取token数据，然后用Jwts包提供的方法校验token的合法性。
- * 如果校验通过，就认为这是一个取得授权的合法请求
+ * 验证用户名密码正确后，生成一个token，并将token返回给客户端
+ * 该类继承自UsernamePasswordAuthenticationFilter，重写了其中的2个方法
+ * attemptAuthentication ：接收并解析用户凭证。
+ * successfulAuthentication ：用户成功登录后，这个方法会被调用，我们在这个方法里生成token。
  */
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -50,7 +57,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(loginParam.getLoginName(), loginParam.getPassword())
             );
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -105,11 +111,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.error(failed.toString());
+
+        JSONObject jsonObject = new JSONObject();
+        if (failed instanceof BadCredentialsException) {
+            //密码错误
+            jsonObject.put("msg","密码错误");
+            jsonObject.put("code", 299);
+        } else if (failed instanceof LockedException) {
+            //账号锁定
+            jsonObject.put("msg","账号锁定");
+            jsonObject.put("code", 299);
+        } else if (failed instanceof InternalAuthenticationServiceException) {
+            //用户不存在
+            jsonObject.put("msg","用户不存在");
+            jsonObject.put("code", 299);
+
+        } else {
+            //其他错误
+            jsonObject.put("msg","其他错误");
+        }
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", 299);
-        jsonObject.put("msg", "认证失败");
         response.getWriter().write(jsonObject.toJSONString());
     }
 }

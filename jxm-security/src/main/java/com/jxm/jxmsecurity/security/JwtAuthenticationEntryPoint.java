@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 
 /**
- * 认证失败处理类
+ * 匿名用户访问无权限资源时的异常
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
@@ -23,7 +23,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        //验证为未登陆状态会进入此方法，认证错误
         System.out.println("认证失败：" + authException.getMessage());
         response.setStatus(200);
         response.setCharacterEncoding("UTF-8");
