@@ -31,6 +31,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
+        System.out.println(request.getRequestURI());
 
         String tokenHeader = request.getHeader(TokenUtil.getHeader());
         // 如果请求头中没有Authorization信息则直接放行了
@@ -38,7 +39,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
-        // 如果请求头中有token，则进行解析，并且设置认证信息
+        // TODO 如果是swagger携带的token呢？ 如果请求头中有token，则进行解析，并且设置认证信息
         SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
         super.doFilterInternal(request, response, chain);
     }

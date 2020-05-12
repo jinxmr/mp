@@ -25,8 +25,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SysUserService userService;
 
+    private static final String[] antMatchers = {"/malls/user/registered", "/configuration/ui", "/v2/api-docs/**", "/swagger-resources/**",
+            "/webjars/**", "/swagger-ui.html"};
+
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -39,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/malls/user/registered", "/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**","/swagger-resources/configuration/ui","/swagge‌​r-ui.html")
+                .antMatchers(antMatchers)
                 .permitAll()
                 .anyRequest()
                 .authenticated()
