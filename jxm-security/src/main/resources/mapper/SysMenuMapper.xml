@@ -36,7 +36,7 @@
         where ur.user_id = #{userId}
     </select>
 
-    <select id="selectMenusByUserId" parameterType="Integer" resultMap="BaseResultMap">
+    <select id="selectMenusByUserId" parameterType="Long" resultMap="BaseResultMap">
         SELECT DISTINCT
         m.id,
         m.parent_id,

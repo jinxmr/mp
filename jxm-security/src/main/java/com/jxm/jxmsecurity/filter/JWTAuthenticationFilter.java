@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 
 /**
+ * 登录认证
  * 验证用户名密码正确后，生成一个token，并将token返回给客户端
  * 该类继承自UsernamePasswordAuthenticationFilter，重写了其中的2个方法
  * attemptAuthentication ：接收并解析用户凭证。

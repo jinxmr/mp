@@ -6,6 +6,7 @@ import com.jxm.jxmsecurity.domain.SysUser;
 import com.jxm.jxmsecurity.service.SysUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,7 @@ public class SysUserRest {
 
 	@PostMapping("insertUser")
 	@ApiOperation("添加用户")
+	@PreAuthorize("hasAuthority('add')")
 	public AjaxResult insertUser(@RequestBody @ApiParam SysUser user) {
 		boolean ret = sysUserService.save(user);
 		return new AjaxResult(ret, ret ? "成功" : "失败");

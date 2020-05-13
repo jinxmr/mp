@@ -3,7 +3,9 @@ package com.jxm.jxmsecurity.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jxm.jxmsecurity.dao.MenuDao;
 import com.jxm.jxmsecurity.dao.UserDao;
+import com.jxm.jxmsecurity.domain.SysMenu;
 import com.jxm.jxmsecurity.domain.SysUser;
 import com.jxm.jxmsecurity.security.WebSecurityConfig;
 import com.jxm.jxmsecurity.vo.LoginParamVO;
@@ -38,6 +40,9 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> implements Use
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Autowired
+	private MenuDao menuDao;
 
 	public Page<SysUser> selectPage(String loginName, String workNumber, String mobile, Integer status, int pageNumber, int pageSize) {
 		Page<SysUser> page = new Page<>(pageNumber, pageSize);
@@ -92,7 +97,17 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> implements Use
 		if(user.getStatus() == 0) {	//正常
 			status = true;
 		}
+		//查询用户菜单权限
+		List<SysMenu> menuList = menuDao.selectMenusByUserId(user.getId());
+		String[] params = {};
+		if(null != menuList) {
+			params = new String[menuList.size()];
+			for(int i = 0; i < menuList.size(); i++) {
+				String perms = menuList.get(i).getPerms();
+				params[i] = perms;
+			}
+		}
 		String password = webSecurityConfig.bCryptPasswordEncoder().encode(user.getPassword());
-		return new LoginParamVO(loginName, password, status, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+		return new LoginParamVO(loginName, password, status, AuthorityUtils.createAuthorityList(params));
 	}
 }

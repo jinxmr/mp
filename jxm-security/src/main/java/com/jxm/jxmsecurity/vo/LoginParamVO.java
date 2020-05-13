@@ -32,7 +32,7 @@ public class LoginParamVO implements UserDetails {
 	@ApiModelProperty(value = "用户状态 0正常 1停用")
 	private Boolean status;
 
-	@ApiModelProperty(value = "工号")
+	@ApiModelProperty(value = "权限集合")
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public LoginParamVO(Long userId, String loginName, String userName, String workNumber) {
