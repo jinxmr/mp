@@ -14,7 +14,9 @@ import com.jxm.jxmsecurity.utils.TokenUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,9 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -99,15 +99,14 @@ public class SysUserService extends ServiceImpl<UserDao, SysUser> implements Use
 		}
 		//查询用户菜单权限
 		List<SysMenu> menuList = menuDao.selectMenusByUserId(user.getId());
-		String[] params = {};
+		//存放权限的集合
+		Set<GrantedAuthority> authorities = new HashSet<>();
 		if(null != menuList) {
-			params = new String[menuList.size()];
 			for(int i = 0; i < menuList.size(); i++) {
-				String perms = menuList.get(i).getPerms();
-				params[i] = perms;
+				authorities.add(new SimpleGrantedAuthority(menuList.get(i).getPerms()));
 			}
 		}
 		String password = webSecurityConfig.bCryptPasswordEncoder().encode(user.getPassword());
-		return new LoginParamVO(loginName, password, status, AuthorityUtils.createAuthorityList(params));
+		return new LoginParamVO(loginName, password, status, authorities);
 	}
 }

@@ -81,12 +81,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         LoginParamVO jwtUser = (LoginParamVO) authResult.getPrincipal();
         log.info("jwtUser:" + jwtUser.toString());
 
-        String role = "";
-        Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
-        for (GrantedAuthority authority : authorities) {
-            role = authority.getAuthority();
-        }
-
         String token = null;
         try {
             token = TokenUtil.createJWT(jwtUser);

@@ -6,6 +6,7 @@ import com.jxm.jxmsecurity.domain.SysUser;
 import com.jxm.jxmsecurity.service.SysUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,7 @@ public class SysUserRest {
 
 	@GetMapping("list")
 	@ApiOperation("用户列表")
+	@PreAuthorize("hasAuthority('user_view')")
 	@ApiImplicitParams({@ApiImplicitParam(name = "pageNumber", value = "页数", required = true, dataType = "int", paramType = "query"), @ApiImplicitParam(name = "pageSize", value = "条数", required = true, dataType = "int", paramType = "query"), @ApiImplicitParam(name = "loginName", value = "登录账号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "workNumber", value = "工号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "mobile", value = "手机号", dataType = "String", paramType = "query"), @ApiImplicitParam(name = "status", value = "用户状态0启用 1停用", dataType = "int", paramType = "query")})
 	public Page<SysUser> list(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam(required = false) String loginName, @RequestParam(required = false) String workNumber, @RequestParam(required = false) String mobile, @RequestParam(required = false) Integer status) {
 		Page<SysUser> page = sysUserService.selectPage(loginName, workNumber, mobile, status, pageNumber, pageSize);

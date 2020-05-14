@@ -11,6 +11,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class TokenUtil {
 
@@ -63,10 +65,7 @@ public class TokenUtil {
         claims.put("userName", userName);
         claims.put("workNumber", workNumber);
         claims.put("userId", userId);
-        List<String> roles = new ArrayList<String>(){{
-            add("user");
-            add("p");
-        }};
+        Collection<? extends GrantedAuthority> roles = loginParam.getAuthorities();
         claims.put("rol", roles);
 
         long nowMillis = System.currentTimeMillis();
@@ -131,9 +130,17 @@ public class TokenUtil {
      * @param token
      * @return
      */
-    public static String getUserRole(String token) {
+    public static List<SimpleGrantedAuthority> getUserRole(String token) {
+
         Claims claims = Jwts.parser().setSigningKey(KEY_BYTE).parseClaimsJws(token).getBody();
-        return claims.get("rol").toString();
+        ArrayList<Map<String, String>> rol = (ArrayList<Map<String, String>>) claims.get("rol");
+        List<SimpleGrantedAuthority> list = new ArrayList<>();
+        for(Map<String, String> roleMap : rol) {
+
+            SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roleMap.get("authority")) ;
+            list.add(grantedAuthority);
+        }
+        return list;
     }
 
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -47,11 +48,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     // 这里从token中获取用户信息并新建一个token
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         String username = TokenUtil.getUserName(token);
-        String role = TokenUtil.getUserRole(token);
+        List<SimpleGrantedAuthority> role = TokenUtil.getUserRole(token);
         if (username != null){
-            return new UsernamePasswordAuthenticationToken(username, null,
-                    Collections.singleton(new SimpleGrantedAuthority(role))
-            );
+            return new UsernamePasswordAuthenticationToken(username, null, role);
         }
         return null;
     }
