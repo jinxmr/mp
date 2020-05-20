@@ -58,6 +58,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(loginParam.getLoginName(), loginParam.getPassword())
             );
         } catch (IOException e) {
+        	e.printStackTrace();
             return null;
         }
     }
@@ -91,7 +92,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 但是这里创建的token只是单纯的token
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
-        response.setHeader(TokenUtil.getHeader(), token);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg","登录成功");
+        jsonObject.put(TokenUtil.getHeader(),token);
+        jsonObject.put("code", 200);
+        response.getWriter().write(jsonObject.toJSONString());
     }
 
     /**
